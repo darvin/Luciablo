@@ -117,7 +117,7 @@
 		1BB2E851139D5E1700749B68 = {
 			isa = PBXGroup;
 			children = (
-				1BB2E866139D5E1900749B68 /* AVScreenShack */,
+				1BB2E866139D5E1900749B68 /* Luciablo */,
 				1BB2E85F139D5E1900749B68 /* Frameworks */,
 				1BB2E85D139D5E1900749B68 /* Products */,
 			);
@@ -168,7 +168,7 @@
 			name = "Other Frameworks";
 			sourceTree = "<group>";
 		};
-		1BB2E866139D5E1900749B68 /* AVScreenShack */ = {
+		1BB2E866139D5E1900749B68 /* Luciablo */ = {
 			isa = PBXGroup;
 			children = (
 				1BB2E872139D5E1900749B68 /* LuciabloDocument.h */,
@@ -187,7 +187,7 @@
 				577FDE9C1C9512D3006F44CF /* PropCoords.h */,
 				577FDE9D1C9512D3006F44CF /* PropCoords.m */,
 			);
-			path = AVScreenShack;
+			path = Luciablo;
 			sourceTree = "<group>";
 		};
 		1BB2E867139D5E1900749B68 /* Supporting Files */ = {
@@ -382,9 +382,9 @@
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "AVScreenShack/Luciablo-Prefix.pch";
+				GCC_PREFIX_HEADER = "Luciablo/Luciablo-Prefix.pch";
 				HEADER_SEARCH_PATHS = /usr/local/include;
-				INFOPLIST_FILE = "AVScreenShack/Luciablo-Info.plist";
+				INFOPLIST_FILE = "Luciablo/Luciablo-Info.plist";
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_NAME = Luciablo;
@@ -397,9 +397,9 @@
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "AVScreenShack/Luciablo-Prefix.pch";
+				GCC_PREFIX_HEADER = "Luciablo/Luciablo-Prefix.pch";
 				HEADER_SEARCH_PATHS = /usr/local/include;
-				INFOPLIST_FILE = "AVScreenShack/Luciablo-Info.plist";
+				INFOPLIST_FILE = "Luciablo/Luciablo-Info.plist";
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_NAME = Luciablo;
