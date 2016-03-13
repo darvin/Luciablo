@@ -49,8 +49,12 @@
 #import "AVScreenShackDocument.h"
 
 #import <AVFoundation/AVFoundation.h>
+#import "OpenCVOutput.h"
+#import "DiabloBot.h"
+#import "CapturePreviewView.h"
+#import "MouseClicker.h"
 
-@interface AVScreenShackDocument ()
+@interface AVScreenShackDocument () <DiabloGameAdapter, CapturePreviewViewDelegate>
 
 @property (weak) IBOutlet NSView *captureView;
 
@@ -69,6 +73,10 @@
     AVCaptureMovieFileOutput    *captureMovieFileOutput;
     NSMutableArray              *shadeWindows;
     NSTimer                     *gameWindowCropTimer;
+    
+    OpenCVOutput *output;
+    DiabloBot *diabloBot;
+    MouseClicker *clicker;
 }
 
 #pragma mark Capture
@@ -82,7 +90,6 @@
         NSString* ownerName = [entry objectForKey:(id)kCGWindowOwnerName];
         NSInteger ownerPID = [[entry objectForKey:(id)kCGWindowOwnerPID] integerValue];
         if ([ownerName isEqualToString:@"Diablo III"]) {
-            NSLog(@"%@", entry);
             CGRect diabloWindowRect;
             NSDictionary *windowRectDict = entry[(id)kCGWindowBounds];
             diabloWindowRect.origin.x = [windowRectDict[@"X"] floatValue];
@@ -91,7 +98,8 @@
             diabloWindowRect.size.width = [windowRectDict[@"Width"] floatValue];
             diabloWindowRect.origin.y = CGDisplayPixelsHigh(CGMainDisplayID()) - diabloWindowRect.origin.y-diabloWindowRect.size.height;
             self.captureScreenInput.cropRect = diabloWindowRect;
-            NSLog(@"%f %f %f %f", diabloWindowRect.origin.x,diabloWindowRect.origin.y, diabloWindowRect.size.width, diabloWindowRect.size.height);
+            self.captureScreenInput.scaleFactor = 0.3;
+//            NSLog(@"%f %f %f %f", diabloWindowRect.origin.x,diabloWindowRect.origin.y, diabloWindowRect.size.width, diabloWindowRect.size.height);
         }
     }
     CFRelease(windowList);
@@ -141,6 +149,11 @@
 	/* Register for notifications of errors during the capture session so we can display an alert. */
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(captureSessionRuntimeErrorDidOccur:) name:AVCaptureSessionRuntimeErrorNotification object:self.captureSession];
     
+    output = [[OpenCVOutput alloc] initWithCaptureSession:self.captureSession ];
+
+//    [output showWindow];
+    
+    diabloBot.gameAdapter = self;
     return YES;
 }
 
@@ -156,13 +169,21 @@
 	AVCaptureVideoPreviewLayer *videoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:self.captureSession];
     
     /* Configure it.*/
-	[videoPreviewLayer setFrame:[[self.captureView layer] bounds]];
-	[videoPreviewLayer setAutoresizingMask:kCALayerWidthSizable|kCALayerHeightSizable];
-    
+	[videoPreviewLayer setFrame:CGRectMake(0, 0, _captureScreenInput.cropRect.size.width, _captureScreenInput.cropRect.size.height)];
+	[videoPreviewLayer setAutoresizingMask:kCALayerHeightSizable|kCALayerWidthSizable];
+    videoPreviewLayer.videoGravity = AVLayerVideoGravityResizeAspect;
+    videoPreviewLayer.contentsGravity = kCAGravityBottomLeft;
+    videoPreviewLayer.backgroundColor = [NSColor redColor].CGColor;
+    self.captureView.frame = CGRectMake(self.captureView.frame.origin.x, self.captureView.frame.origin.y, videoPreviewLayer.frame.size.width, videoPreviewLayer.frame.size.height);
     /* Add the preview layer as a sublayer to the view. */
+    [self.captureView layer].layoutManager  = [CAConstraintLayoutManager layoutManager];
+    [self.captureView layer].contentsGravity = kCAGravityResizeAspect;
+    [self.captureView layer].autoresizingMask = kCALayerHeightSizable | kCALayerWidthSizable;
+
     [[self.captureView layer] addSublayer:videoPreviewLayer];
     /* Specify the background color of the layer. */
-	[[self.captureView layer] setBackgroundColor:CGColorGetConstantColor(kCGColorBlack)];
+	[[self.captureView layer] setBackgroundColor:[NSColor greenColor].CGColor];
+
 }
 
 /*
@@ -241,7 +262,8 @@
     self = [super initWithType:typeName error:outError];
     
     if (self) 
-    {        
+    {
+
         BOOL success = [self createCaptureSession:outError];
         if (!success) 
         {
@@ -249,6 +271,9 @@
             
         }
         gameWindowCropTimer = [NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(setCropToGameWindow) userInfo:nil repeats:YES];
+        
+        diabloBot = [[DiabloBot alloc] init];
+        clicker = [[MouseClicker alloc] init];
     }
     
     return self;
@@ -262,12 +287,6 @@
 
 - (NSString *)windowNibName
 {
-	/* 
-       Override returning the nib file name of the document.
-     
-	   If you need to use a subclass of NSWindowController or if your document supports multiple NSWindowControllers, 
-       you should remove this method and override -makeWindowControllers instead.
-     */
     
 	return @"AVScreenShackDocument";
 }
@@ -282,7 +301,7 @@
     [self.captureSession startRunning];
 
 	[[aController window] setContentBorderThickness:75.f forEdge:NSMinYEdge];
-	[[aController window] setMovableByWindowBackground:YES];
+	[[aController window] setMovableByWindowBackground:NO];
 }
 
 /* Called when the document is closed. */
@@ -300,70 +319,6 @@
     return NO;
 }
 
-#pragma mark Crop Rect
-
-#define kShadyWindowLevel   (NSDockWindowLevel + 1000)
-//
-///* Draws a crop rect on the display. */
-//- (void)drawMouseBoxView:(DrawMouseBoxView*)view didSelectRect:(NSRect)rect
-//{
-//	/* Map point into global coordinates. */
-//    NSRect globalRect = rect;
-//    NSRect windowRect = [[view window] frame];
-//    globalRect = NSOffsetRect(globalRect, windowRect.origin.x, windowRect.origin.y);
-//	globalRect.origin.y = CGDisplayPixelsHigh(CGMainDisplayID()) - globalRect.origin.y;
-//	CGDirectDisplayID displayID = display;
-//	uint32_t matchingDisplayCount = 0;
-//    /* Get a list of online displays with bounds that include the specified point. */
-//	CGError e = CGGetDisplaysWithPoint(NSPointToCGPoint(globalRect.origin), 1, &displayID, &matchingDisplayCount);
-//	if ((e == kCGErrorSuccess) && (1 == matchingDisplayCount)) 
-//    {
-//        /* Add the display as a capture input. */
-//        [self addDisplayInputToCaptureSession:displayID cropRect:NSRectToCGRect(rect)];
-//    }
-//    
-//	for (NSWindow* w in [NSApp windows])
-//	{
-//		if ([w level] == kShadyWindowLevel)
-//        {
-//			[w close];
-//        }
-//	}
-//	[[NSCursor currentCursor] pop];
-//    [shadeWindows removeAllObjects];
-//}
-//
-///* 
-// Called when the user sets a Crop Rect for the display.
-// 
-// First dims the display, then allows the user specify a rectangular
-// area of the display to capture.
-//*/
-//- (IBAction)setDisplayAndCropRect:(id)sender
-//{
-//
-//    if(!shadeWindows) {
-//        shadeWindows = [NSMutableArray array];
-//    }
-//
-//	for (NSScreen* screen in [NSScreen screens])
-//    {
-//		NSRect frame = [screen frame];
-//		NSWindow * window = [[NSWindow alloc] initWithContentRect:frame styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO];
-//		[window setBackgroundColor:[NSColor blackColor]];
-//		[window setAlphaValue:.5];
-//		[window setLevel:kShadyWindowLevel];
-//		[window setReleasedWhenClosed:NO];
-//
-//		DrawMouseBoxView* drawMouseBoxView = [[DrawMouseBoxView alloc] initWithFrame:frame];
-//		drawMouseBoxView.delegate = self;
-//		[window setContentView:drawMouseBoxView];
-//		[window makeKeyAndOrderFront:self];
-//        [shadeWindows addObject:window];
-//	}
-//	
-//	[[NSCursor crosshairCursor] push];
-//}
 
 
 - (void)alertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo
@@ -424,5 +379,41 @@
 {
     [captureMovieFileOutput stopRecording];
 }
+
+
+
+#pragma mark - CaptureViewDelegate
+
+- (void)caputurePreview:(CapturePreviewView *)cp wasClickedAtPoint:(CGPoint)point {
+    NSLog(@"Clicked: %f %f", point.x, point.y);
+    
+    CGRect cropRect = _captureScreenInput.cropRect;
+    
+//    diabloWindowRect.origin.y = CGDisplayPixelsHigh(CGMainDisplayID()) - diabloWindowRect.origin.y-diabloWindowRect.size.height;
+
+    CGFloat baseY =  CGDisplayPixelsHigh(CGMainDisplayID()) - cropRect.origin.y;
+    CGFloat baseX = cropRect.origin.x;
+    CGPoint screenPoint = CGPointMake(baseX+point.x, baseY-point.y);
+    NSLog(@"POINT: %f %f", screenPoint.x, screenPoint.y);
+    [clicker clickInPoint:screenPoint];
+}
+- (void)caputurePreview:(CapturePreviewView *)cp wasDraggedFrom:(CGPoint)from to:(CGPoint)to {
+    NSLog(@"Dragged: %f %f > %f %f", from.x, from.y,  to.x, to.y);
+
+}
+
+#pragma mark -DiabloGameProvider
+
+- (void)hoverMouseAtPoint:(CGPoint)point {
+    
+}
+- (void)clickMouseAtPoint:(CGPoint)point {
+    
+}
+
+- (void)hoverMouseAtPoint:(CGPoint)point readTooltipInRect:(CGRect *)rect completion:(void (^)(NSString *string))completion {
+    
+}
+
 
 @end
