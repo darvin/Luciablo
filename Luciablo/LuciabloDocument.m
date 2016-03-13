@@ -58,11 +58,8 @@
 
 @property (weak) IBOutlet NSView *captureView;
 
+@property (weak) IBOutlet NSButton *clickCheckbox;
 
-
-- (IBAction)startRecording:(id)sender;
-- (IBAction)stopRecording:(id)sender;
-- (IBAction)setDisplayAndCropRect:(id)sender;
 
 @end
 
@@ -348,20 +345,24 @@
 
 - (void)caputurePreview:(CapturePreviewView *)cp wasClickedAtPoint:(PPoint *)point {
     NSLog(@"Clicked: %f %f", point.x, point.y);
+    if (self.clickCheckbox.state==NSOnState) {
+        CGRect cropRect = _captureScreenInput.cropRect;
+        
+        CGPoint screenOffset = [point cgpointInFieldOfSize:cropRect.size];
+        CGFloat baseY =  CGDisplayPixelsHigh(CGMainDisplayID()) - cropRect.origin.y;
+        CGFloat baseX = cropRect.origin.x;
+        CGPoint screenPoint = CGPointMake(baseX+screenOffset.x, baseY-screenOffset.y);
+        NSLog(@"POINT: %f %f", screenPoint.x, screenPoint.y);
+        [clicker clickInPoint:screenPoint];
+
+    }
     
-    CGRect cropRect = _captureScreenInput.cropRect;
-    
-    CGPoint screenOffset = [point cgpointInFieldOfSize:cropRect.size];
-    CGFloat baseY =  CGDisplayPixelsHigh(CGMainDisplayID()) - cropRect.origin.y;
-    CGFloat baseX = cropRect.origin.x;
-    CGPoint screenPoint = CGPointMake(baseX+screenOffset.x, baseY-screenOffset.y);
-    NSLog(@"POINT: %f %f", screenPoint.x, screenPoint.y);
-    [clicker clickInPoint:screenPoint];
+    [output highlightPoint:point];
 }
 - (void)caputurePreview:(CapturePreviewView *)cp wasDraggedFrom:(PPoint *)from to:(PPoint *)to {
     NSLog(@"Dragged: %f %f > %f %f", from.x, from.y,  to.x, to.y);
     
-    [output drawRect:[PRect rectFrom:from to:to]];
+    [output highlightRect:[PRect rectFrom:from to:to]];
 }
 
 #pragma mark -DiabloGameProvider

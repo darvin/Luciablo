@@ -54,14 +54,14 @@ void CannyThreshold(int, void*)
 @implementation OpenCVOutput {
     NSTimer *frameShowTimer;
     VideoCapture *captRefrnc;
-    NSMutableDictionary *highlightRects;
-    int lastHighlightRectID;
+    NSMutableDictionary *highlights;
+    int lastHighlightID;
     Mat currentFrame;
 }
 - (id)initWithCaptureSession:(AVCaptureSession *)session {
     if (self=[super init]) {
         
-        highlightRects = [[NSMutableDictionary alloc] init];
+        highlights = [[NSMutableDictionary alloc] init];
         
         captRefrnc = new VideoCapture();
         captRefrnc->open((char *)(__bridge void *)session, 0);
@@ -97,7 +97,7 @@ void CannyThreshold(int, void*)
             warpAffine( frameReference, currentFrame, rot_mat, currentFrame.size() );
 
             
-            [self highlightRectsInCurrentFrame];
+            [self highlightInCurrentFrame];
             imshow(WIN_RF, currentFrame);
 //            src = frameWarp;
 //            CannyThreshold(0,NULL);
@@ -120,19 +120,32 @@ void CannyThreshold(int, void*)
 
 }
 
-- (int)drawRect:(PPoint *)rect {
-    lastHighlightRectID++;
+- (int)highlightRect:(PPoint *)rect {
+    lastHighlightID++;
     
-    highlightRects[@(lastHighlightRectID)] = rect;
-    return lastHighlightRectID;
+    highlights[@(lastHighlightID)] = rect;
+    return lastHighlightID;
 }
 
-- (void)highlightRectsInCurrentFrame {
-    [highlightRects enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, PRect *  rect, BOOL * _Nonnull stop) {
-        
-        cv::Rect cvRect = [self cvRectFromRect:rect];
-        NSLog(@"opencv drawing : %d %d > %d %d", cvRect.tl().x, cvRect.tl().y, cvRect.br().x, cvRect.br().y);
-        rectangle( currentFrame, cvRect.tl(), cvRect.br(), Scalar( 0, 55, 255 ), +1, 4 );
+- (int)highlightPoint:(PPoint *)point {
+    lastHighlightID++;
+    
+    highlights[@(lastHighlightID)] = point;
+    return lastHighlightID;
+
+}
+
+- (void)highlightInCurrentFrame {
+    [highlights enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id highlight, BOOL * _Nonnull stop) {
+        if ([highlight isKindOfClass: [PRect class]]) {
+            PRect *rect = highlight;
+            cv::Rect cvRect = [self cvRectFromRect:rect];
+            NSLog(@"opencv drawing : %d %d > %d %d", cvRect.tl().x, cvRect.tl().y, cvRect.br().x, cvRect.br().y);
+            rectangle( currentFrame, cvRect.tl(), cvRect.br(), Scalar( 0, 55, 255 ), +1, 4 );
+
+        } else if ([highlight isKindOfClass:[PPoint class]]) {
+            circle(currentFrame, [self cvPointFromPoint:highlight], 3, Scalar( 0, 55, 255 ), +1, 4 );
+        }
 
     }];
 }
@@ -142,7 +155,8 @@ void CannyThreshold(int, void*)
 }
 
 - (cv::Point)cvPointFromPoint:(PPoint *)point {
-    
+    CGPoint scaledPoint = [point cgpointInFieldOfSize:CGSizeMake(currentFrame.cols, currentFrame.rows)];
+    return cv::Point(scaledPoint.x, currentFrame.rows- scaledPoint.y);
 }
 
 - (PRect *)rectFromCVRect:(cv::Rect)cvRect {

@@ -14,5 +14,6 @@
 - (id)initWithCaptureSession:(AVCaptureSession *)session;
 - (void)showWindow;
 
-- (int)drawRect:(PRect *)rect;
+- (int)highlightRect:(PRect *)rect;
+- (int)highlightPoint:(PPoint *)point;
 @end
