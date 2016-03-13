@@ -46,7 +46,7 @@
  
  */
 
-#import "AVScreenShackDocument.h"
+#import "LuciabloDocument.h"
 
 #import <AVFoundation/AVFoundation.h>
 #import "OpenCVOutput.h"
@@ -54,7 +54,7 @@
 #import "CapturePreviewView.h"
 #import "MouseClicker.h"
 
-@interface AVScreenShackDocument () <DiabloGameAdapter, CapturePreviewViewDelegate>
+@interface LuciabloDocument () <DiabloGameAdapter, CapturePreviewViewDelegate>
 
 @property (weak) IBOutlet NSView *captureView;
 
@@ -67,7 +67,7 @@
 @end
 
 
-@implementation AVScreenShackDocument
+@implementation LuciabloDocument
 {
     CGDirectDisplayID           display;
     AVCaptureMovieFileOutput    *captureMovieFileOutput;
@@ -289,7 +289,7 @@
 - (NSString *)windowNibName
 {
     
-	return @"AVScreenShackDocument";
+	return @"LuciabloDocument";
 }
 
 - (void)windowControllerDidLoadNib:(NSWindowController *)aController

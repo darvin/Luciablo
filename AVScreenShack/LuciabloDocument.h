@@ -50,7 +50,7 @@
 
 @class AVCaptureSession, AVCaptureScreenInput, AVCaptureMovieFileOutput;
 
-@interface AVScreenShackDocument : NSDocument <AVCaptureFileOutputDelegate,AVCaptureFileOutputRecordingDelegate>
+@interface LuciabloDocument : NSDocument <AVCaptureFileOutputDelegate,AVCaptureFileOutputRecordingDelegate>
 
 @property (strong) AVCaptureSession *captureSession;
 @property (strong) AVCaptureScreenInput *captureScreenInput;
