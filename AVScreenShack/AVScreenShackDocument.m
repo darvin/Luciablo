@@ -152,7 +152,7 @@
     
     output = [[OpenCVOutput alloc] initWithCaptureSession:self.captureSession ];
 
-//    [output showWindow];
+    [output showWindow];
     
     diabloBot.gameAdapter = self;
     return YES;
@@ -399,7 +399,8 @@
 }
 - (void)caputurePreview:(CapturePreviewView *)cp wasDraggedFrom:(PPoint *)from to:(PPoint *)to {
     NSLog(@"Dragged: %f %f > %f %f", from.x, from.y,  to.x, to.y);
-
+    
+    [output drawRect:[PRect rectFrom:from to:to]];
 }
 
 #pragma mark -DiabloGameProvider

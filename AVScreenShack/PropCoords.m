@@ -24,18 +24,35 @@
 
 
 @implementation PRect
-+ (instancetype)rectFromCGRect:(CGRect)rect inFieldOfSize:(CGSize)size {
-    PPoint *resorigin = [PPoint pointFromCGPoint:rect.origin inFieldOfSize:size];
-    PPoint *ressize = [PPoint pointFromCGPoint:CGPointMake(rect.size.width, rect.size.height) inFieldOfSize:size];
+
++ (instancetype)rectFrom:(PPoint *)from to:(PPoint *)to {
+    //fixme
+    
     PRect * res= [[self alloc] init];
-    res.x = resorigin.x;
-    res.y = resorigin.y;
-    res.width = ressize.x;
-    res.height = ressize.y;
+    res.p1 = from;
+    res.p2 = to;
+    return res;
+
+}
++ (instancetype)rectFromCGRect:(CGRect)rect inFieldOfSize:(CGSize)size {
+    PRect * res= [[self alloc] init];
+    res.p1 = [PPoint pointFromCGPoint:rect.origin inFieldOfSize:size];
+    res.p2 = [PPoint pointFromCGPoint:
+              CGPointMake(rect.size.width+ rect.origin.x,
+                        rect.size.height+ rect.origin.y) inFieldOfSize:size];
     return res;
 }
 - (CGRect)cgrectInFieldOfSize:(CGSize)size {
-    return CGRectMake(self.x*size.width, self.y*size.height, self.width*size.width, self.height*size.height);
+    
+    CGRect rect = CGRectStandardize(
+            CGRectMake(
+                       self.p1.x*size.width,
+                       self.p1.y*size.height,
+                       (self.p2.x - self.p1.x)*size.width,
+                       (self.p2.y - self.p1.y)*size.height
+                       ));
+    
+    return rect;
 }
 
 @end

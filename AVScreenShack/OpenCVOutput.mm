@@ -54,10 +54,14 @@ void CannyThreshold(int, void*)
 @implementation OpenCVOutput {
     NSTimer *frameShowTimer;
     VideoCapture *captRefrnc;
+    NSMutableDictionary *highlightRects;
+    int lastHighlightRectID;
+    Mat currentFrame;
 }
 - (id)initWithCaptureSession:(AVCaptureSession *)session {
     if (self=[super init]) {
         
+        highlightRects = [[NSMutableDictionary alloc] init];
         
         captRefrnc = new VideoCapture();
         captRefrnc->open((char *)(__bridge void *)session, 0);
@@ -72,7 +76,7 @@ void CannyThreshold(int, void*)
 
 - (void)updateFrame {
     if (captRefrnc!=NULL) {
-        Mat frameReference, orig, origTranspose, frameWarp;
+        Mat frameReference, orig, origTranspose;
         
         *captRefrnc >> orig;
 
@@ -85,15 +89,16 @@ void CannyThreshold(int, void*)
             double angle = 0;
             double scale = 1;
 
-            frameWarp = Mat::zeros( frameReference.rows*scale, frameReference.cols*scale, frameReference.type() );
+            currentFrame = Mat::zeros( frameReference.rows*scale, frameReference.cols*scale, frameReference.type() );
             /// Compute a rotation matrix with respect to the center of the image
             cv::Point center = cv::Point( 0, 0);
             Mat rot_mat( 2, 3, CV_32FC1 );
             rot_mat = getRotationMatrix2D( center, angle, scale );
-            warpAffine( frameReference, frameWarp, rot_mat, frameWarp.size() );
+            warpAffine( frameReference, currentFrame, rot_mat, currentFrame.size() );
 
             
-            imshow(WIN_RF, frameWarp);
+            [self highlightRectsInCurrentFrame];
+            imshow(WIN_RF, currentFrame);
 //            src = frameWarp;
 //            CannyThreshold(0,NULL);
         }
@@ -112,6 +117,41 @@ void CannyThreshold(int, void*)
 //    createTrackbar( "Min Threshold:", WIN_UT, &lowThreshold, max_lowThreshold );
 
     frameShowTimer = [NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(updateFrame) userInfo:nil repeats:YES];
+
+}
+
+- (int)drawRect:(PPoint *)rect {
+    lastHighlightRectID++;
+    
+    highlightRects[@(lastHighlightRectID)] = rect;
+    return lastHighlightRectID;
+}
+
+- (void)highlightRectsInCurrentFrame {
+    [highlightRects enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, PRect *  rect, BOOL * _Nonnull stop) {
+        
+        cv::Rect cvRect = [self cvRectFromRect:rect];
+        NSLog(@"opencv drawing : %d %d > %d %d", cvRect.tl().x, cvRect.tl().y, cvRect.br().x, cvRect.br().y);
+        rectangle( currentFrame, cvRect.tl(), cvRect.br(), Scalar( 0, 55, 255 ), +1, 4 );
+
+    }];
+}
+
+- (PPoint *)pointFromCVPoint:(cv::Point)cvPoint {
+    
+}
+
+- (cv::Point)cvPointFromPoint:(PPoint *)point {
+    
+}
+
+- (PRect *)rectFromCVRect:(cv::Rect)cvRect {
+    
+}
+
+- (cv::Rect)cvRectFromRect:(PRect *)rect {
+    CGRect scaledRect = [rect cgrectInFieldOfSize:CGSizeMake(currentFrame.cols, currentFrame.rows)];
+    return cv::Rect(scaledRect.origin.x, currentFrame.rows- scaledRect.origin.y-scaledRect.size.height, scaledRect.size.width, scaledRect.size.height);
 
 }
 

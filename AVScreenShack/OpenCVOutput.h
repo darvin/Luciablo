@@ -7,8 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "PropCoords.h"
+
 @class AVCaptureSession;
 @interface OpenCVOutput : NSObject
 - (id)initWithCaptureSession:(AVCaptureSession *)session;
 - (void)showWindow;
+
+- (int)drawRect:(PRect *)rect;
 @end
