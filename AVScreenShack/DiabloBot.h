@@ -7,6 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
+
+
 @protocol DiabloGameAdapter
 - (void)hoverMouseAtPoint:(CGPoint)point;
 - (void)clickMouseAtPoint:(CGPoint)point;

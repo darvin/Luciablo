@@ -89,7 +89,7 @@
     {
         NSString* ownerName = [entry objectForKey:(id)kCGWindowOwnerName];
         NSInteger ownerPID = [[entry objectForKey:(id)kCGWindowOwnerPID] integerValue];
-        if ([ownerName isEqualToString:@"Diablo III"]) {
+        if ([ownerName isEqualToString:@"Pixelmator"] && [entry[(id)kCGWindowName] hasPrefix:@"Untitled"]) {
             CGRect diabloWindowRect;
             NSDictionary *windowRectDict = entry[(id)kCGWindowBounds];
             diabloWindowRect.origin.x = [windowRectDict[@"X"] floatValue];
@@ -100,6 +100,7 @@
             self.captureScreenInput.cropRect = diabloWindowRect;
             self.captureScreenInput.scaleFactor = 0.3;
 //            NSLog(@"%f %f %f %f", diabloWindowRect.origin.x,diabloWindowRect.origin.y, diabloWindowRect.size.width, diabloWindowRect.size.height);
+            break;
         }
     }
     CFRelease(windowList);
@@ -384,20 +385,19 @@
 
 #pragma mark - CaptureViewDelegate
 
-- (void)caputurePreview:(CapturePreviewView *)cp wasClickedAtPoint:(CGPoint)point {
+- (void)caputurePreview:(CapturePreviewView *)cp wasClickedAtPoint:(PPoint *)point {
     NSLog(@"Clicked: %f %f", point.x, point.y);
     
     CGRect cropRect = _captureScreenInput.cropRect;
     
-//    diabloWindowRect.origin.y = CGDisplayPixelsHigh(CGMainDisplayID()) - diabloWindowRect.origin.y-diabloWindowRect.size.height;
-
+    CGPoint screenOffset = [point cgpointInFieldOfSize:cropRect.size];
     CGFloat baseY =  CGDisplayPixelsHigh(CGMainDisplayID()) - cropRect.origin.y;
     CGFloat baseX = cropRect.origin.x;
-    CGPoint screenPoint = CGPointMake(baseX+point.x, baseY-point.y);
+    CGPoint screenPoint = CGPointMake(baseX+screenOffset.x, baseY-screenOffset.y);
     NSLog(@"POINT: %f %f", screenPoint.x, screenPoint.y);
     [clicker clickInPoint:screenPoint];
 }
-- (void)caputurePreview:(CapturePreviewView *)cp wasDraggedFrom:(CGPoint)from to:(CGPoint)to {
+- (void)caputurePreview:(CapturePreviewView *)cp wasDraggedFrom:(PPoint *)from to:(PPoint *)to {
     NSLog(@"Dragged: %f %f > %f %f", from.x, from.y,  to.x, to.y);
 
 }

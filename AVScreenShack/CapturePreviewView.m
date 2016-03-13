@@ -32,13 +32,11 @@
 
 
 
-- (CGPoint)pointOfCaptureLayerInInputCoords:(CGPoint)pointLayer {
+- (PPoint *)pointOfCaptureLayerInPropCoords:(CGPoint)pointLayer {
 
     AVCaptureScreenInput *input =[self captureLayer].session.inputs[0];
     CGRect cropRect = [input cropRect];
-    CGSize layerSize = [self captureLayer].frame.size;
-    CGFloat scale = cropRect.size.width/layerSize.width;
-    return CGPointMake(pointLayer.x*scale, pointLayer.y*scale);
+    return [PPoint pointFromCGPoint:pointLayer inFieldOfSize:cropRect.size];
     
 }
 
@@ -47,7 +45,7 @@
 
     if ([theEvent type]==NSRightMouseDown) {
         if ([self.delegate respondsToSelector:@selector(caputurePreview:wasClickedAtPoint:)])
-            [self.delegate caputurePreview:self wasClickedAtPoint:[self pointOfCaptureLayerInInputCoords:[self pointInCaptureLevelCoords:mouseLoc]]];
+            [self.delegate caputurePreview:self wasClickedAtPoint:[self pointOfCaptureLayerInPropCoords:[self pointInCaptureLevelCoords:mouseLoc]]];
         
         return;
     }
@@ -105,7 +103,7 @@
     [overlay removeFromSuperlayer];
     
     if ([self.delegate respondsToSelector:@selector(caputurePreview:wasDraggedFrom:to:)])
-        [self.delegate caputurePreview:self wasDraggedFrom:from to:to];
+        [self.delegate caputurePreview:self wasDraggedFrom:[self pointOfCaptureLayerInPropCoords:from] to:[self pointOfCaptureLayerInPropCoords:to]];
 
     return;
 }

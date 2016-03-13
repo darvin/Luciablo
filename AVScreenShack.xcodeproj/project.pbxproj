@@ -20,6 +20,7 @@
 		577FDE911C939EF9006F44CF /* CapturePreviewView.m in Sources */ = {isa = PBXBuildFile; fileRef = 577FDE901C939EF9006F44CF /* CapturePreviewView.m */; };
 		577FDE931C93A6FC006F44CF /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 577FDE921C93A6FC006F44CF /* QuartzCore.framework */; };
 		577FDE961C93ABDE006F44CF /* MouseClicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 577FDE951C93ABDE006F44CF /* MouseClicker.m */; };
+		577FDE9E1C9512D3006F44CF /* PropCoords.m in Sources */ = {isa = PBXBuildFile; fileRef = 577FDE9D1C9512D3006F44CF /* PropCoords.m */; };
 		57EA83311C934DCE00B207A3 /* OpenCVOutput.mm in Sources */ = {isa = PBXBuildFile; fileRef = 57EA83301C934DCE00B207A3 /* OpenCVOutput.mm */; };
 		57EA83421C934FCE00B207A3 /* libopencv_calib3d.3.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 57EA83321C934FCE00B207A3 /* libopencv_calib3d.3.1.0.dylib */; };
 		57EA83431C934FCE00B207A3 /* libopencv_features2d.3.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 57EA83331C934FCE00B207A3 /* libopencv_features2d.3.1.0.dylib */; };
@@ -63,6 +64,8 @@
 		577FDE921C93A6FC006F44CF /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		577FDE941C93ABDE006F44CF /* MouseClicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MouseClicker.h; sourceTree = "<group>"; };
 		577FDE951C93ABDE006F44CF /* MouseClicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MouseClicker.m; sourceTree = "<group>"; };
+		577FDE9C1C9512D3006F44CF /* PropCoords.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PropCoords.h; sourceTree = "<group>"; };
+		577FDE9D1C9512D3006F44CF /* PropCoords.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PropCoords.m; sourceTree = "<group>"; };
 		57EA832F1C934DCE00B207A3 /* OpenCVOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenCVOutput.h; sourceTree = "<group>"; };
 		57EA83301C934DCE00B207A3 /* OpenCVOutput.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OpenCVOutput.mm; sourceTree = "<group>"; };
 		57EA83321C934FCE00B207A3 /* libopencv_calib3d.3.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_calib3d.3.1.0.dylib; path = ../../../../usr/local/lib/libopencv_calib3d.3.1.0.dylib; sourceTree = "<group>"; };
@@ -186,6 +189,8 @@
 				577FDE901C939EF9006F44CF /* CapturePreviewView.m */,
 				577FDE941C93ABDE006F44CF /* MouseClicker.h */,
 				577FDE951C93ABDE006F44CF /* MouseClicker.m */,
+				577FDE9C1C9512D3006F44CF /* PropCoords.h */,
+				577FDE9D1C9512D3006F44CF /* PropCoords.m */,
 			);
 			path = AVScreenShack;
 			sourceTree = "<group>";
@@ -266,6 +271,7 @@
 			files = (
 				577FDE961C93ABDE006F44CF /* MouseClicker.m in Sources */,
 				577FDE911C939EF9006F44CF /* CapturePreviewView.m in Sources */,
+				577FDE9E1C9512D3006F44CF /* PropCoords.m in Sources */,
 				1BB2E86D139D5E1900749B68 /* main.m in Sources */,
 				57EA83311C934DCE00B207A3 /* OpenCVOutput.mm in Sources */,
 				1BB2E874139D5E1900749B68 /* AVScreenShackDocument.m in Sources */,
