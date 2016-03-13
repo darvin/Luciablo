@@ -55,6 +55,7 @@ void CannyThreshold(int, void*)
     NSTimer *frameShowTimer;
     VideoCapture *captRefrnc;
     NSMutableDictionary *highlights;
+    NSMutableDictionary *highlightsExpires;
     int lastHighlightID;
     Mat currentFrame;
 }
@@ -62,7 +63,7 @@ void CannyThreshold(int, void*)
     if (self=[super init]) {
         
         highlights = [[NSMutableDictionary alloc] init];
-        
+        highlightsExpires =[[NSMutableDictionary alloc] init];
         captRefrnc = new VideoCapture();
         captRefrnc->open((char *)(__bridge void *)session, 0);
         if (!captRefrnc->isOpened())
@@ -121,21 +122,31 @@ void CannyThreshold(int, void*)
 }
 
 - (int)highlightRect:(PPoint *)rect {
-    lastHighlightID++;
-    
-    highlights[@(lastHighlightID)] = rect;
-    return lastHighlightID;
+    return [self highlightObj:rect];
 }
 
 - (int)highlightPoint:(PPoint *)point {
+    return [self highlightObj:point];
+}
+
+- (int)highlightObj:(id)obj {
     lastHighlightID++;
     
-    highlights[@(lastHighlightID)] = point;
+    highlights[@(lastHighlightID)] = obj;
+    
+    highlightsExpires[@(lastHighlightID)] = [NSDate dateWithTimeIntervalSinceNow:0.9];
     return lastHighlightID;
 
 }
 
 - (void)highlightInCurrentFrame {
+    NSDate *now = [NSDate date];
+    [highlightsExpires enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, NSDate *  _Nonnull expireDate, BOOL * _Nonnull stop) {
+        if ([expireDate compare:now]==NSOrderedAscending) {
+            [highlightsExpires removeObjectForKey:key];
+            [highlights removeObjectForKey:key];
+        }
+    }];
     [highlights enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id highlight, BOOL * _Nonnull stop) {
         if ([highlight isKindOfClass: [PRect class]]) {
             PRect *rect = highlight;
