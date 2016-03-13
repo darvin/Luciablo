@@ -344,45 +344,6 @@
 }
 
 
-#pragma mark Start/Stop Button Actions
-
-/* Called when the user presses the 'Start' button to start a recording. */
-- (IBAction)startRecording:(id)sender
-{
-	NSLog(@"Minimum Frame Duration: %f, Crop Rect: %@, Scale Factor: %f, Capture Mouse Clicks: %@, Capture Mouse Cursor: %@, Remove Duplicate Frames: %@",
-		  CMTimeGetSeconds([self.captureScreenInput minFrameDuration]),
-		  NSStringFromRect(NSRectFromCGRect([self.captureScreenInput cropRect])),
-		  [self.captureScreenInput scaleFactor],
-		  [self.captureScreenInput capturesMouseClicks] ? @"Yes" : @"No",
-		  [self.captureScreenInput capturesCursor] ? @"Yes" : @"No",
-		  [self.captureScreenInput removesDuplicateFrames] ? @"Yes" : @"No");
-	
-    /* Create a recording file */
-    char *screenRecordingFileName = strdup([[@"~/Desktop/AVScreenShackRecording_XXXXXX" stringByStandardizingPath] fileSystemRepresentation]);
-    if (screenRecordingFileName)
-    {
-        int fileDescriptor = mkstemp(screenRecordingFileName);
-        if (fileDescriptor != -1)
-        {
-            NSString *filenameStr = [[NSFileManager defaultManager] stringWithFileSystemRepresentation:screenRecordingFileName length:strlen(screenRecordingFileName)];
-            
-            /* Starts recording to a given URL. */
-            [captureMovieFileOutput startRecordingToOutputFileURL:[NSURL fileURLWithPath:[filenameStr stringByAppendingPathExtension:@"mov"]] recordingDelegate:self];
-        }
-        
-        remove(screenRecordingFileName);
-        free(screenRecordingFileName);
-    }
-}
-
-/* Called when the user presses the 'Stop' button to stop a recording. */
-- (IBAction)stopRecording:(id)sender
-{
-    [captureMovieFileOutput stopRecording];
-}
-
-
-
 #pragma mark - CaptureViewDelegate
 
 - (void)caputurePreview:(CapturePreviewView *)cp wasClickedAtPoint:(PPoint *)point {

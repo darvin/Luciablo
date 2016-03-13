@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
+        <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9532"/>
     </dependencies>
     <objects>
@@ -21,28 +22,6 @@
                 <rect key="frame" x="0.0" y="0.0" width="791" height="519"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button verticalHuggingPriority="750" id="100023">
-                        <rect key="frame" x="617" y="8" width="70" height="32"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
-                        <buttonCell key="cell" type="push" title="Start" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="100024">
-                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
-                        </buttonCell>
-                        <connections>
-                            <action selector="startRecording:" target="-2" id="100027"/>
-                        </connections>
-                    </button>
-                    <button verticalHuggingPriority="750" id="100025">
-                        <rect key="frame" x="687" y="8" width="82" height="32"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
-                        <buttonCell key="cell" type="push" title="Stop" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="100026">
-                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
-                        </buttonCell>
-                        <connections>
-                            <action selector="stopRecording:" target="-2" id="100028"/>
-                        </connections>
-                    </button>
                     <slider verticalHuggingPriority="750" id="100029">
                         <rect key="frame" x="646" y="40" width="86" height="21"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
@@ -74,7 +53,7 @@
                         </connections>
                     </textField>
                     <textField verticalHuggingPriority="750" id="100051">
-                        <rect key="frame" x="163" y="44" width="40" height="17"/>
+                        <rect key="frame" x="164" y="44" width="40" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Scale:" id="100052">
                             <font key="font" metaFont="system"/>
@@ -97,39 +76,6 @@
                             </connections>
                         </textFieldCell>
                     </textField>
-                    <button id="100058">
-                        <rect key="frame" x="164" y="18" width="159" height="18"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
-                        <buttonCell key="cell" type="check" title="Capture Mouse Clicks" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="100059">
-                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                            <font key="font" metaFont="system"/>
-                        </buttonCell>
-                        <connections>
-                            <binding destination="-2" name="value" keyPath="captureScreenInput.capturesMouseClicks" id="100064"/>
-                        </connections>
-                    </button>
-                    <button id="100142">
-                        <rect key="frame" x="339" y="43" width="164" height="18"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
-                        <buttonCell key="cell" type="check" title="Capture Mouse Cursor" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="100143">
-                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                            <font key="font" metaFont="system"/>
-                        </buttonCell>
-                        <connections>
-                            <binding destination="-2" name="value" keyPath="captureScreenInput.capturesCursor" id="100156"/>
-                        </connections>
-                    </button>
-                    <button id="100145">
-                        <rect key="frame" x="339" y="18" width="185" height="18"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
-                        <buttonCell key="cell" type="check" title="Remove Duplicate Frames" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="100146">
-                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                            <font key="font" metaFont="system"/>
-                        </buttonCell>
-                        <connections>
-                            <binding destination="-2" name="value" keyPath="captureScreenInput.removesDuplicateFrames" id="100157"/>
-                        </connections>
-                    </button>
                     <customView wantsLayer="YES" id="100021" customClass="CapturePreviewView">
                         <rect key="frame" x="-1" y="74" width="792" height="445"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -139,64 +85,6 @@
                     </customView>
                 </subviews>
             </view>
-            <toolbar key="toolbar" implicitIdentifier="CC63CA68-108B-4BDE-BDCD-7BBA3FDF90C9" autosavesConfiguration="NO" allowsUserCustomization="NO" displayMode="iconAndLabel" sizeMode="regular" id="100097">
-                <allowedToolbarItems>
-                    <toolbarItem implicitItemIdentifier="12FF9858-DDF4-408B-A571-C8932AFD89B0" label="Session Preset" paletteLabel="Session Preset" id="100111">
-                        <nil key="toolTip"/>
-                        <size key="minSize" width="100" height="25"/>
-                        <size key="maxSize" width="120" height="25"/>
-                        <popUpButton key="view" verticalHuggingPriority="750" id="100105">
-                            <rect key="frame" x="0.0" y="14" width="100" height="25"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                            <popUpButtonCell key="cell" type="roundTextured" title="Photo" bezelStyle="texturedRounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="100132" id="100106">
-                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                <font key="font" metaFont="menu"/>
-                                <menu key="menu" title="OtherViews" id="100107">
-                                    <items>
-                                        <menuItem title="Low" id="100112">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                        </menuItem>
-                                        <menuItem title="Medium" id="100113">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                        </menuItem>
-                                        <menuItem title="High" id="100114">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                        </menuItem>
-                                        <menuItem title="320x240" id="100117">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                        </menuItem>
-                                        <menuItem title="352x288" id="100118">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                        </menuItem>
-                                        <menuItem title="640x480" id="100115">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                        </menuItem>
-                                        <menuItem title="960x540" id="100116">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                        </menuItem>
-                                        <menuItem title="1280x720" id="100119">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                        </menuItem>
-                                        <menuItem title="Photo" state="on" id="100132">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                        </menuItem>
-                                    </items>
-                                </menu>
-                            </popUpButtonCell>
-                            <connections>
-                                <binding destination="-2" name="selectedIndex" keyPath="captureSession.sessionPreset" id="100131">
-                                    <dictionary key="options">
-                                        <string key="NSValueTransformerName">AVScreenShackPresetTransformer</string>
-                                    </dictionary>
-                                </binding>
-                            </connections>
-                        </popUpButton>
-                    </toolbarItem>
-                </allowedToolbarItems>
-                <defaultToolbarItems>
-                    <toolbarItem reference="100111"/>
-                </defaultToolbarItems>
-            </toolbar>
             <connections>
                 <outlet property="delegate" destination="-2" id="17"/>
             </connections>

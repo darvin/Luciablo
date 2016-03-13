@@ -15,7 +15,6 @@
 		1BB2E874139D5E1900749B68 /* LuciabloDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BB2E873139D5E1900749B68 /* LuciabloDocument.m */; };
 		1BB2E877139D5E1900749B68 /* LuciabloDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1BB2E875139D5E1900749B68 /* LuciabloDocument.xib */; };
 		1BB2E87A139D5E1A00749B68 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1BB2E878139D5E1A00749B68 /* MainMenu.xib */; };
-		1BED9B85139D6E5900A332BD /* AVScreenShackPresetTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BED9B82139D6E5900A332BD /* AVScreenShackPresetTransformer.m */; };
 		577FDE8E1C939762006F44CF /* DiabloBot.m in Sources */ = {isa = PBXBuildFile; fileRef = 577FDE8D1C939762006F44CF /* DiabloBot.m */; };
 		577FDE911C939EF9006F44CF /* CapturePreviewView.m in Sources */ = {isa = PBXBuildFile; fileRef = 577FDE901C939EF9006F44CF /* CapturePreviewView.m */; };
 		577FDE931C93A6FC006F44CF /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 577FDE921C93A6FC006F44CF /* QuartzCore.framework */; };
@@ -55,8 +54,6 @@
 		1BB2E873139D5E1900749B68 /* LuciabloDocument.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LuciabloDocument.m; sourceTree = "<group>"; };
 		1BB2E876139D5E1900749B68 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/LuciabloDocument.xib; sourceTree = "<group>"; };
 		1BB2E879139D5E1A00749B68 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		1BED9B81139D6E5900A332BD /* AVScreenShackPresetTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVScreenShackPresetTransformer.h; sourceTree = "<group>"; };
-		1BED9B82139D6E5900A332BD /* AVScreenShackPresetTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AVScreenShackPresetTransformer.m; sourceTree = "<group>"; };
 		577FDE8C1C939762006F44CF /* DiabloBot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DiabloBot.h; sourceTree = "<group>"; };
 		577FDE8D1C939762006F44CF /* DiabloBot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DiabloBot.m; sourceTree = "<group>"; };
 		577FDE8F1C939EF9006F44CF /* CapturePreviewView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CapturePreviewView.h; sourceTree = "<group>"; };
@@ -176,8 +173,6 @@
 			children = (
 				1BB2E872139D5E1900749B68 /* LuciabloDocument.h */,
 				1BB2E873139D5E1900749B68 /* LuciabloDocument.m */,
-				1BED9B81139D6E5900A332BD /* AVScreenShackPresetTransformer.h */,
-				1BED9B82139D6E5900A332BD /* AVScreenShackPresetTransformer.m */,
 				1BB2E875139D5E1900749B68 /* LuciabloDocument.xib */,
 				1BB2E878139D5E1A00749B68 /* MainMenu.xib */,
 				1BB2E867139D5E1900749B68 /* Supporting Files */,
@@ -276,7 +271,6 @@
 				57EA83311C934DCE00B207A3 /* OpenCVOutput.mm in Sources */,
 				1BB2E874139D5E1900749B68 /* LuciabloDocument.m in Sources */,
 				577FDE8E1C939762006F44CF /* DiabloBot.m in Sources */,
-				1BED9B85139D6E5900A332BD /* AVScreenShackPresetTransformer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
