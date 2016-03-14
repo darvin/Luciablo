@@ -79,7 +79,9 @@
 #pragma mark Capture
 
 
-- (BOOL)setCropToGameWindow {
+- (CGRect)getGameWindowCropAndDisplayID:(CGDirectDisplayID *)displayIDOut {
+    CGRect diabloWindowRect;
+    CGRect dspyRect;
     CFArrayRef windowList = CGWindowListCopyWindowInfo(kCGWindowListOptionOnScreenOnly, kCGNullWindowID);
 
     for (NSMutableDictionary* entry in (__bridge NSArray*)windowList)
@@ -88,21 +90,40 @@
         NSInteger ownerPID = [[entry objectForKey:(id)kCGWindowOwnerPID] integerValue];
 //        if ([ownerName isEqualToString:@"Pixelmator"] && [entry[(id)kCGWindowName] hasPrefix:@"Untitled"]) {
         if ([ownerName isEqualToString:@"Diablo III"]) {
-            CGRect diabloWindowRect;
-            NSDictionary *windowRectDict = entry[(id)kCGWindowBounds];
-            diabloWindowRect.origin.x = [windowRectDict[@"X"] floatValue];
-            diabloWindowRect.origin.y = [windowRectDict[@"Y"] floatValue];
-            diabloWindowRect.size.height = [windowRectDict[@"Height"] floatValue];
-            diabloWindowRect.size.width = [windowRectDict[@"Width"] floatValue];
-            diabloWindowRect.origin.y = CGDisplayPixelsHigh(CGMainDisplayID()) - diabloWindowRect.origin.y-diabloWindowRect.size.height;
-            self.captureScreenInput.cropRect = diabloWindowRect;
-            self.captureScreenInput.scaleFactor = 0.3;
+            
+            uint32_t maxDisplayCount = 10;
+            CGDirectDisplayID onlineDisplayIDs[maxDisplayCount];
+            uint32_t displayCount;
+            CGGetOnlineDisplayList(maxDisplayCount, (CGDirectDisplayID*)&onlineDisplayIDs, &displayCount);
+            CGRectMakeWithDictionaryRepresentation((__bridge CFDictionaryRef)(entry[(id)kCGWindowBounds]), &diabloWindowRect);
+
+            for(uint32_t i = 0; i < displayCount; ++i)
+            {
+                dspyRect = CGDisplayBounds(onlineDisplayIDs[i]);
+  
+                    if(CGRectContainsRect(dspyRect, diabloWindowRect))
+                    {
+                        NSLog(@"window is on screen with ID:%d", onlineDisplayIDs[i]);
+                        *displayIDOut =  onlineDisplayIDs[i];
+                    }
+            }
+
+            if (CGDisplayIsMain(*displayIDOut)) {
+                diabloWindowRect.origin.y = CGDisplayPixelsHigh(*displayIDOut) - diabloWindowRect.origin.y-diabloWindowRect.size.height;
+
+            } else {
+
+                            diabloWindowRect.origin.y -= dspyRect.origin.y;
+                            diabloWindowRect.origin.x -= dspyRect.origin.x;
+                diabloWindowRect.origin.y = CGDisplayPixelsHigh(*displayIDOut) - diabloWindowRect.origin.y-diabloWindowRect.size.height;
+
+            }
 //            NSLog(@"%f %f %f %f", diabloWindowRect.origin.x,diabloWindowRect.origin.y, diabloWindowRect.size.width, diabloWindowRect.size.height);
             break;
         }
     }
     CFRelease(windowList);
-    return YES;
+    return diabloWindowRect;
 }
 
 - (BOOL)createCaptureSession:(NSError **)outError
@@ -115,16 +136,17 @@
 		[self.captureSession setSessionPreset:AVCaptureSessionPresetHigh];
     }
     
-    /* Add the main display as a capture input. */
-    display = CGMainDisplayID();
-    self.captureScreenInput = [[AVCaptureScreenInput alloc] initWithDisplayID:display];
     
     
-    
+    ;
+    CGRect gameWindowRect = [self getGameWindowCropAndDisplayID:&display];
 
-    [self setCropToGameWindow];
     
-    if ([self.captureSession canAddInput:self.captureScreenInput]) 
+    self.captureScreenInput = [[AVCaptureScreenInput alloc] initWithDisplayID:display];
+    self.captureScreenInput.cropRect = gameWindowRect;
+    self.captureScreenInput.scaleFactor = 0.3;
+
+    if ([self.captureSession canAddInput:self.captureScreenInput])
     {
         [self.captureSession addInput:self.captureScreenInput];
     } 
@@ -204,14 +226,17 @@
 	[self.captureScreenInput setMinFrameDuration:minimumFrameDuration];
 }
 
-/* Add a display as an input to the capture session. */
--(void)addDisplayInputToCaptureSession:(CGDirectDisplayID)newDisplay cropRect:(CGRect)cropRect
+-(void)setCropToGameWindow
 {
+    CGDirectDisplayID newDisplay;
+    CGRect cropRect = [self getGameWindowCropAndDisplayID:&newDisplay];
     /* Indicates the start of a set of configuration changes to be made atomically. */
+    
+    return;
     [self.captureSession beginConfiguration];
     
     /* Is this display the current capture input? */
-    if ( newDisplay != display ) 
+    if ( newDisplay != display && false)
     {
         /* Display is not the current input, so remove it. */
         [self.captureSession removeInput:self.captureScreenInput];
@@ -350,7 +375,7 @@
         CGRect cropRect = _captureScreenInput.cropRect;
         
         CGPoint screenOffset = [point cgpointInFieldOfSize:cropRect.size];
-        CGFloat baseY =  CGDisplayPixelsHigh(CGMainDisplayID()) - cropRect.origin.y;
+        CGFloat baseY =  CGDisplayPixelsHigh(display) - cropRect.origin.y;
         CGFloat baseX = cropRect.origin.x;
         CGPoint screenPoint = CGPointMake(baseX+screenOffset.x, baseY-screenOffset.y);
         NSLog(@"POINT: %f %f", screenPoint.x, screenPoint.y);
