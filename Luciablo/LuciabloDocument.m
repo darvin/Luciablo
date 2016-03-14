@@ -232,29 +232,31 @@
     CGRect cropRect = [self getGameWindowCropAndDisplayID:&newDisplay];
     /* Indicates the start of a set of configuration changes to be made atomically. */
     
-    return;
-    [self.captureSession beginConfiguration];
-    
-    /* Is this display the current capture input? */
-    if ( newDisplay != display && false)
-    {
-        /* Display is not the current input, so remove it. */
-        [self.captureSession removeInput:self.captureScreenInput];
-        AVCaptureScreenInput *newScreenInput = [[AVCaptureScreenInput alloc] initWithDisplayID:newDisplay];
+    if (newDisplay!=display || !CGRectEqualToRect(cropRect, self.captureScreenInput.cropRect) ) {
+        [self.captureSession beginConfiguration];
         
-        self.captureScreenInput = newScreenInput;
-        if ( [self.captureSession canAddInput:self.captureScreenInput] )
+        /* Is this display the current capture input? */
+        if ( newDisplay != display)
         {
-            /* Add the new display capture input. */
-            [self.captureSession addInput:self.captureScreenInput];
+            /* Display is not the current input, so remove it. */
+            [self.captureSession removeInput:self.captureScreenInput];
+            AVCaptureScreenInput *newScreenInput = [[AVCaptureScreenInput alloc] initWithDisplayID:newDisplay];
+            
+            self.captureScreenInput = newScreenInput;
+            if ( [self.captureSession canAddInput:self.captureScreenInput] )
+            {
+                /* Add the new display capture input. */
+                [self.captureSession addInput:self.captureScreenInput];
+            }
+            [self setMaximumScreenInputFramerate:[self maximumScreenInputFramerate]];
         }
-        [self setMaximumScreenInputFramerate:[self maximumScreenInputFramerate]];
+        /* Set the bounding rectangle of the screen area to be captured, in pixels. */
+        [self.captureScreenInput setCropRect:cropRect];
+        
+        /* Commits the configuration changes. */
+        [self.captureSession commitConfiguration];
     }
-    /* Set the bounding rectangle of the screen area to be captured, in pixels. */
-    [self.captureScreenInput setCropRect:cropRect];
     
-    /* Commits the configuration changes. */
-    [self.captureSession commitConfiguration];
 }
 
 
