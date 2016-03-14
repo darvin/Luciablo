@@ -16,4 +16,7 @@
 
 - (int)highlightRect:(PRect *)rect;
 - (int)highlightPoint:(PPoint *)point;
+
+- (NSString *)readTextInRect:(PRect *)rect;
+- (void)saveScreenshotToPath:(NSString *)path;
 @end

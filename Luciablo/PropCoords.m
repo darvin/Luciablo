@@ -46,6 +46,26 @@ PRect *PRectMake(float x, float y, float width, float height) {
     return self;
 
 }
+
+- (float) x{
+    return _p1.x;
+}
+
+- (float) y{
+    return _p1.x;
+}
+
+
+- (float) width{
+    assert(_p2.x-_p1.x >0);
+    return _p2.x-_p1.x;
+}
+
+- (float) height{
+    assert(_p2.y-_p1.y >0);
+    return _p2.y-_p1.y;
+}
+
 + (instancetype)rectFrom:(PPoint *)from to:(PPoint *)to {
     //fixme
     

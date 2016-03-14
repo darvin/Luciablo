@@ -22,6 +22,12 @@
 @interface PRect : NSObject
 @property PPoint *p1;
 @property PPoint *p2;
+
+@property (readonly) float x;
+@property (readonly) float y;
+@property (readonly) float width;
+@property (readonly) float height;
+
 -(instancetype) initWithX:(float)x Y:(float)y width:(float)width height:(float)height;
 + (instancetype)rectFromCGRect:(CGRect)rect inFieldOfSize:(CGSize)size;
 - (CGRect)cgrectInFieldOfSize:(CGSize)size;

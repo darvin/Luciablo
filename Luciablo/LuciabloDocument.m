@@ -57,10 +57,11 @@
 @interface LuciabloDocument () <DiabloGameAdapter, CapturePreviewViewDelegate>
 
 @property (weak) IBOutlet NSView *captureView;
+@property (weak) IBOutlet NSView *view;
 
 @property (weak) IBOutlet NSButton *clickCheckbox;
 
-
+- (IBAction)saveScrenshot:(id)sender;
 @end
 
 
@@ -80,10 +81,11 @@
 
 
 - (CGRect)getGameWindowCropAndDisplayID:(CGDirectDisplayID *)displayIDOut {
+    
     CGRect diabloWindowRect;
     CGRect dspyRect;
     CFArrayRef windowList = CGWindowListCopyWindowInfo(kCGWindowListOptionOnScreenOnly, kCGNullWindowID);
-
+    BOOL isWindowed = YES; //fixme
     for (NSMutableDictionary* entry in (__bridge NSArray*)windowList)
     {
         NSString* ownerName = [entry objectForKey:(id)kCGWindowOwnerName];
@@ -103,7 +105,6 @@
   
                     if(CGRectContainsRect(dspyRect, diabloWindowRect))
                     {
-                        NSLog(@"window is on screen with ID:%d", onlineDisplayIDs[i]);
                         *displayIDOut =  onlineDisplayIDs[i];
                     }
             }
@@ -113,12 +114,18 @@
 
             } else {
 
-                            diabloWindowRect.origin.y -= dspyRect.origin.y;
-                            diabloWindowRect.origin.x -= dspyRect.origin.x;
+                diabloWindowRect.origin.y -= dspyRect.origin.y;
+                diabloWindowRect.origin.x -= dspyRect.origin.x;
                 diabloWindowRect.origin.y = CGDisplayPixelsHigh(*displayIDOut) - diabloWindowRect.origin.y-diabloWindowRect.size.height;
 
             }
+            
+            if (isWindowed) {
+                diabloWindowRect.size.height -=22;
+            }
 //            NSLog(@"%f %f %f %f", diabloWindowRect.origin.x,diabloWindowRect.origin.y, diabloWindowRect.size.width, diabloWindowRect.size.height);
+            
+            
             break;
         }
     }
@@ -144,7 +151,7 @@
     
     self.captureScreenInput = [[AVCaptureScreenInput alloc] initWithDisplayID:display];
     self.captureScreenInput.cropRect = gameWindowRect;
-    self.captureScreenInput.scaleFactor = 0.3;
+    self.captureScreenInput.scaleFactor = 1.0;
 
     if ([self.captureSession canAddInput:self.captureScreenInput])
     {
@@ -188,7 +195,7 @@
 {
     /* Create a video preview layer. */
 	AVCaptureVideoPreviewLayer *videoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:self.captureSession];
-    
+
     /* Configure it.*/
 	[videoPreviewLayer setFrame:CGRectMake(0, 0, _captureScreenInput.cropRect.size.width, _captureScreenInput.cropRect.size.height)];
 	[videoPreviewLayer setAutoresizingMask:kCALayerHeightSizable|kCALayerWidthSizable];
@@ -200,7 +207,8 @@
     [self.captureView layer].layoutManager  = [CAConstraintLayoutManager layoutManager];
     [self.captureView layer].contentsGravity = kCAGravityResizeAspect;
     [self.captureView layer].autoresizingMask = kCALayerHeightSizable | kCALayerWidthSizable;
-
+//    [[self view] setWantsLayer:YES];
+//    self.view.layer.backgroundColor = [NSColor blackColor].CGColor;
     [[self.captureView layer] addSublayer:videoPreviewLayer];
     /* Specify the background color of the layer. */
 	[[self.captureView layer] setBackgroundColor:[NSColor greenColor].CGColor];
@@ -368,7 +376,19 @@
                         contextInfo:NULL];
 }
 
+#pragma mark - GUI
 
+- (IBAction)saveScrenshot:(id)sender {
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"yyyy-MM-dd HH-mm-ss"];
+
+    NSString *stringFromDate = [formatter stringFromDate:[NSDate date]];
+    NSArray* paths = NSSearchPathForDirectoriesInDomains(NSDesktopDirectory, NSUserDomainMask, YES );
+    NSString* theDesktopPath = [paths objectAtIndex:0];
+
+    [output saveScreenshotToPath:[theDesktopPath stringByAppendingPathComponent:[NSString stringWithFormat:@"LuciabloScreenshot-%@.bmp", stringFromDate]]];
+
+}
 #pragma mark - CaptureViewDelegate
 
 - (void)caputurePreview:(CapturePreviewView *)cp wasClickedAtPoint:(PPoint *)point {
@@ -388,9 +408,9 @@
     [output highlightPoint:point];
 }
 - (void)caputurePreview:(CapturePreviewView *)cp wasDraggedFrom:(PPoint *)from to:(PPoint *)to {
-    NSLog(@"Dragged: %f %f > %f %f", from.x, from.y,  to.x, to.y);
-    
-    [output highlightRect:[PRect rectFrom:from to:to]];
+    PRect *rect = [PRect rectFrom:from to:to];
+    [output highlightRect:rect];
+    NSLog(@"RECT: %f;%f;%f;%f", rect.x, rect.y, rect.width,rect.height);
 }
 
 #pragma mark -DiabloGameProvider

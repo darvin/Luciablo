@@ -9,6 +9,7 @@
             <connections>
                 <outlet property="captureView" destination="100021" id="100141"/>
                 <outlet property="clickCheckbox" destination="haZ-wq-QRW" id="r88-su-T6o"/>
+                <outlet property="view" destination="6" id="LKV-4V-YhK"/>
                 <outlet property="window" destination="5" id="18"/>
             </connections>
         </customObject>
@@ -86,11 +87,22 @@
                     </customView>
                     <button id="haZ-wq-QRW">
                         <rect key="frame" x="12" y="42" width="107" height="18"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
                         <buttonCell key="cell" type="check" title="Click On Click" bezelStyle="regularSquare" imagePosition="left" inset="2" id="Jmf-cp-SiM">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                    </button>
+                    <button verticalHuggingPriority="750" id="N1o-3X-0bD">
+                        <rect key="frame" x="8" y="7" width="142" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
+                        <buttonCell key="cell" type="push" title="Save Screenshot" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="JLA-1a-R1n">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="saveScrenshot:" target="-2" id="6bV-hA-Jl2"/>
+                        </connections>
                     </button>
                 </subviews>
             </view>

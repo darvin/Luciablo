@@ -151,7 +151,7 @@ void CannyThreshold(int, void*)
         if ([highlight isKindOfClass: [PRect class]]) {
             PRect *rect = highlight;
             cv::Rect cvRect = [self cvRectFromRect:rect];
-            NSLog(@"opencv drawing : %d %d > %d %d", cvRect.tl().x, cvRect.tl().y, cvRect.br().x, cvRect.br().y);
+//            NSLog(@"opencv drawing : %d %d > %d %d", cvRect.tl().x, cvRect.tl().y, cvRect.br().x, cvRect.br().y);
             rectangle( currentFrame, cvRect.tl(), cvRect.br(), Scalar( 0, 55, 255 ), +1, 4 );
 
         } else if ([highlight isKindOfClass:[PPoint class]]) {
@@ -178,6 +178,10 @@ void CannyThreshold(int, void*)
     CGRect scaledRect = [rect cgrectInFieldOfSize:CGSizeMake(currentFrame.cols, currentFrame.rows)];
     return cv::Rect(scaledRect.origin.x, currentFrame.rows- scaledRect.origin.y-scaledRect.size.height, scaledRect.size.width, scaledRect.size.height);
 
+}
+
+- (void)saveScreenshotToPath:(NSString *)path {
+    imwrite([path UTF8String], currentFrame);
 }
 
 @end
