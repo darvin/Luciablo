@@ -8,7 +8,21 @@
 
 #import "PropCoords.h"
 
+PPoint *PPointMake(float x, float y) {
+    return [[PPoint alloc] initWithX:x Y:y];
+}
+PRect *PRectMake(float x, float y, float width, float height) {
+    return [[PRect alloc] initWithX:x Y:y width:width height:height];
+}
+
 @implementation PPoint
+-(instancetype) initWithX:(float)x Y:(float)y {
+    if (self=[super init]) {
+        _x = x; _y = y;
+    }
+    return self;
+}
+
 + (instancetype)pointFromCGPoint:(CGPoint)point inFieldOfSize:(CGSize)size {
     PPoint *res = [[self alloc] init];
     
@@ -24,7 +38,14 @@
 
 
 @implementation PRect
+-(instancetype) initWithX:(float)x Y:(float)y width:(float)width height:(float)height {
+    if (self=[super init]) {
+        _p1 = PPointMake(x, y);
+        _p2 = PPointMake(x+width, y+height);
+    }
+    return self;
 
+}
 + (instancetype)rectFrom:(PPoint *)from to:(PPoint *)to {
     //fixme
     

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>HealthTooltipActivation</key>
+	<string>0.000234;0.2235522</string>
+	<key>HealthTooltip</key>
+	<string>0.000234;0.2235522;0.3;0.002</string>
+	<key>ManaTooltipActivation</key>
+	<string>0.0234;0.2235522</string>
+	<key>ManaTooltip</key>
+	<string>0.0234;0.2235522;0.0234;0.2235522</string>
+</dict>
+</plist>

@@ -1,1 +1,10 @@
+PODS:
+  - Functional.m (1.0.0)
+
+DEPENDENCIES:
+  - Functional.m
+
+SPEC CHECKSUMS:
+  Functional.m: 072ea6a57954f7792a3aaf19042ed6d3258e3026
+
 COCOAPODS: 0.39.0

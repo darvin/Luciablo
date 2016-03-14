@@ -86,7 +86,8 @@
     {
         NSString* ownerName = [entry objectForKey:(id)kCGWindowOwnerName];
         NSInteger ownerPID = [[entry objectForKey:(id)kCGWindowOwnerPID] integerValue];
-        if ([ownerName isEqualToString:@"Pixelmator"] && [entry[(id)kCGWindowName] hasPrefix:@"Untitled"]) {
+//        if ([ownerName isEqualToString:@"Pixelmator"] && [entry[(id)kCGWindowName] hasPrefix:@"Untitled"]) {
+        if ([ownerName isEqualToString:@"Diablo III"]) {
             CGRect diabloWindowRect;
             NSDictionary *windowRectDict = entry[(id)kCGWindowBounds];
             diabloWindowRect.origin.x = [windowRectDict[@"X"] floatValue];
